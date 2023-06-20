@@ -47,6 +47,11 @@ public class SistemasReservasHotel_3_2 {
     String nomeHospede = Entrada.leiaString("===== Cadastro de Reserva (1/4)=====\n" +
                                             "Digite o nome do hóspede: ");
     
+    if (nomeHospede.equals("null")) {
+      Entrada.leiaString("Nome inválido!");
+      return;
+    }
+    
     int numeroQuarto = Entrada.leiaInt("===== Cadastro de Reserva (2/4)=====\n" +
                                        "Digite o número do quarto: ");
     
@@ -78,7 +83,7 @@ public class SistemasReservasHotel_3_2 {
                                         "Digite a data de saída: ");
         continue;
       }
-      if (validarSaida(inputEntrada,inputSaida)){
+      if (!validarSaida(inputEntrada,inputSaida)){
         inputSaida = Entrada.leiaString("===== Cadastro de Reserva (4/4)=====\n" +
                                         "Data anterior a entrada! " +     
                                         "Digite a data de saída: ");
@@ -128,6 +133,10 @@ public class SistemasReservasHotel_3_2 {
       String nomeHospede = Entrada.leiaString("===== Cadastro de Reserva (1/3)=====\n" +
                                               "Digite o nome do hóspede: ");
       
+      if (nomeHospede.equals("null")) {
+        Entrada.leiaString("Nome inválido!");
+        return;
+      }      
       
       String inputEntrada = Entrada.leiaString("===== Cadastro de Reserva (2/3)=====\n" +
                                                "Digite a data de entrada: ", "" + dtEntrada[numeroQuarto - 1]);
@@ -141,10 +150,22 @@ public class SistemasReservasHotel_3_2 {
       String inputSaida = Entrada.leiaString("===== Cadastro de Reserva (3/3)=====\n" +
                                              "Digite a data de saída: ", "" + dtSaida[numeroQuarto - 1]);
       
-      while (validarData(inputSaida) == false){
-        inputSaida = Entrada.leiaString("===== Cadastro de Reserva (3/3)=====\n" +
-                                        "Data inválida! " +     
-                                        "Digite a data de saída: ");
+      boolean dataValida = false;
+      
+      while (!dataValida){
+        if (validarData(inputSaida) == false) {
+          inputSaida = Entrada.leiaString("===== Cadastro de Reserva (4/4)=====\n" +
+                                          "Data inválida! " +     
+                                          "Digite a data de saída: ");
+          continue;
+        }
+        if (!validarSaida(inputEntrada,inputSaida)){
+          inputSaida = Entrada.leiaString("===== Cadastro de Reserva (4/4)=====\n" +
+                                          "Data anterior a entrada! " +     
+                                          "Digite a data de saída: ");
+          continue;
+        }
+        dataValida = true;
       }
       
       dtEntrada[numeroQuarto - 1] = inputEntrada;
@@ -221,14 +242,15 @@ public class SistemasReservasHotel_3_2 {
     System.out.println("Validando datas: "+entrada+" à "+saida);
     String[] arrEnt = entrada.split("/");
     String[] arrSai = saida.split("/");    
+    System.out.println(arrEnt[0]+"."+arrEnt[1]+"."+arrEnt[2]+"   "+arrSai[0]+"."+arrSai[1]+"."+arrSai[2]);
     Calendar dataEnt = Calendar.getInstance();
-    dataEnt.set(Integer.parseInt(arrEnt[2]),Integer.parseInt(arrEnt[1]),Integer.parseInt(arrEnt[0]));
+    dataEnt.set(Integer.parseInt(arrEnt[2]),Integer.parseInt(arrEnt[1])-1,Integer.parseInt(arrEnt[0]));
     Calendar dataSai = Calendar.getInstance();
-    dataSai.set(Integer.parseInt(arrSai[2]),Integer.parseInt(arrSai[1]),Integer.parseInt(arrSai[0]));
+    dataSai.set(Integer.parseInt(arrSai[2]),Integer.parseInt(arrSai[1])-1,Integer.parseInt(arrSai[0]));
     System.out.println("Entrada: "+dataEnt.getTime()+" saída: "+dataSai.getTime());
     int comparacao = dataEnt.compareTo(dataSai);
     System.out.println(comparacao);
-    if (dataEnt.compareTo(dataSai)<0)
+    if (dataEnt.compareTo(dataSai)<=0)
       return true;
     else 
       return false;
